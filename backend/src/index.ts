@@ -1,12 +1,14 @@
-import express from 'express';
+import express from "express";
+import userRouter from "./routers/user"
+import workerRouter from "./routers/worker"
+import cors from "cors";
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-    res.send('Hello from TypeScript Express!');
-});
+app.use(express.json());
+app.use(cors())
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+app.use("/v1/user", userRouter);
+app.use("/v1/worker", workerRouter);
+
+app.listen(3000)
