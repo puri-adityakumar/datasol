@@ -1,5 +1,5 @@
 "use client"
-import { BACKEND_URL, CLOUDFRONT_URL } from "@/utils";
+import { BACKEND_URL } from "@/utils";
 import axios from "axios";
 import { useState } from "react"
 
@@ -13,26 +13,25 @@ export function UploadImage({ onImageAdded, image }: {
         setUploading(true);
         try {
             const file = e.target.files[0];
-            const response = await axios.get(`${BACKEND_URL}/v1/user/presignedUrl`, {
-                headers: {
-                    "Authorization": localStorage.getItem("token")
-                }
-            });
-            const presignedUrl = response.data.preSignedUrl;
-            const formData = new FormData();
-            formData.set("bucket", response.data.fields["bucket"])
-            formData.set("X-Amz-Algorithm", response.data.fields["X-Amz-Algorithm"]);
-            formData.set("X-Amz-Credential", response.data.fields["X-Amz-Credential"]);
-            formData.set("X-Amz-Algorithm", response.data.fields["X-Amz-Algorithm"]);
-            formData.set("X-Amz-Date", response.data.fields["X-Amz-Date"]);
-            formData.set("key", response.data.fields["key"]);
-            formData.set("Policy", response.data.fields["Policy"]);
-            formData.set("X-Amz-Signature", response.data.fields["X-Amz-Signature"]);
-            formData.set("X-Amz-Algorithm", response.data.fields["X-Amz-Algorithm"]);
-            formData.append("file", file);
-            const awsResponse = await axios.post(presignedUrl, formData);
-
-            onImageAdded(`${CLOUDFRONT_URL}/${response.data.fields["key"]}`);
+            
+            // TODO: Phase 2 - Implement Cloudinary upload
+            // For now, this is a placeholder for Cloudinary integration
+            console.log("File selected:", file.name);
+            
+            // TODO: Implement Cloudinary signature endpoint call
+            // const signatureResponse = await axios.get(`${BACKEND_URL}/v1/user/cloudinary-signature`, {
+            //     headers: {
+            //         "Authorization": localStorage.getItem("token")
+            //     }
+            // });
+            
+            // TODO: Upload to Cloudinary with signature
+            // const cloudinaryUrl = await uploadToCloudinary(file, signatureResponse.data);
+            // onImageAdded(cloudinaryUrl);
+            
+            // Temporary placeholder for development
+            const tempUrl = URL.createObjectURL(file);
+            onImageAdded(tempUrl);
         } catch(e) {
             console.log(e)
         }

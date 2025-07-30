@@ -1,11 +1,9 @@
 import nacl from "tweetnacl";
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, TOTAL_DECIMALS } from "../config";
 import { authMiddleware } from "../middleware";
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 import { createTaskInput } from "../types";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
@@ -14,14 +12,6 @@ const connection = new Connection(process.env.RPC_URL ?? "");
 const PARENT_WALLET_ADDRESS = "2KeovpYvrgpziaDsq8nbNMP4mc48VNBVXb5arbqrg9Cq";
     
 const DEFAULT_TITLE = "Select the most clickable thumbnail";
-
-const s3Client = new S3Client({
-    credentials: {
-        accessKeyId: process.env.ACCESS_KEY_ID ?? "",
-        secretAccessKey: process.env.ACCESS_SECRET ?? "",
-    },
-    region: "us-east-1"
-})
 
 const router = Router();
 
@@ -174,25 +164,7 @@ router.post("/task", authMiddleware, async (req, res) => {
 
 })
 
-router.get("/presignedUrl", authMiddleware, async (req, res) => {
-    // @ts-ignore
-    const userId = req.userId;
 
-    const { url, fields } = await createPresignedPost(s3Client, {
-        Bucket: 'hkirat-cms',
-        Key: `fiver/${userId}/${Math.random()}/image.jpg`,
-        Conditions: [
-          ['content-length-range', 0, 5 * 1024 * 1024] // 5 MB max
-        ],
-        Expires: 3600
-    })
-
-    res.json({
-        preSignedUrl: url,
-        fields
-    })
-    
-})
 
 router.post("/signin", async(req, res) => {
     const { publicKey, signature } = req.body;
