@@ -8,7 +8,7 @@ import { getNextTask } from "../db";
 import { createSubmissionInput } from "../types";
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
 import { privateKey } from "../privateKey";
-import { decode } from "bs58";
+import bs58 from "bs58";
 const connection = new Connection(process.env.RPC_URL ?? "");
 
 const TOTAL_SUBMISSIONS = 100;
@@ -51,7 +51,7 @@ router.post("/payout", workerMiddleware, async (req, res) => {
 
     console.log(worker.address);
 
-    const keypair = Keypair.fromSecretKey(decode(privateKey));
+    const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
 
     // TODO: There's a double spending problem here
     // The user can request the withdrawal multiple times
