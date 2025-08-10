@@ -14,21 +14,6 @@ export function UploadImage({ onImageAdded, image }: {
         try {
             const file = e.target.files[0];
             
-            // TODO: Phase 2 - Implement Cloudinary upload
-            // For now, this is a placeholder for Cloudinary integration
-            console.log("File selected:", file.name);
-            
-            // TODO: Implement Cloudinary signature endpoint call
-            // const signatureResponse = await axios.get(`${BACKEND_URL}/v1/user/cloudinary-signature`, {
-            //     headers: {
-            //         "Authorization": localStorage.getItem("token")
-            //     }
-            // });
-            
-            // TODO: Upload to Cloudinary with signature
-            // const cloudinaryUrl = await uploadToCloudinary(file, signatureResponse.data);
-            // onImageAdded(cloudinaryUrl);
-            
             // Temporary placeholder for development
             const tempUrl = URL.createObjectURL(file);
             onImageAdded(tempUrl);
