@@ -1,7 +1,17 @@
 "use client"
-import { BACKEND_URL } from "@/utils";
-import axios from "axios";
 import { useState } from "react"
+import { supabase } from "@/utils/supabase";
+import { v4 as uuidv4 } from 'uuid';
+
+async function uploadToSupabase(file: File) {
+    const fileName = `${uuidv4()}-${file.name}`;
+    const { data, error } = await supabase.storage.from('task-images').upload(fileName, file);
+    if (error) {
+        throw error;
+    }
+    const publicUrl = supabase.storage.from('task-images').getPublicUrl(fileName);
+    return publicUrl.data.publicUrl;
+}
 
 export function UploadImage({ onImageAdded, image }: {
     onImageAdded: (image: string) => void;
@@ -13,10 +23,8 @@ export function UploadImage({ onImageAdded, image }: {
         setUploading(true);
         try {
             const file = e.target.files[0];
-            
-            // Temporary placeholder for development
-            const tempUrl = URL.createObjectURL(file);
-            onImageAdded(tempUrl);
+            const url = await uploadToSupabase(file);
+            onImageAdded(url);
         } catch(e) {
             console.log(e)
         }
